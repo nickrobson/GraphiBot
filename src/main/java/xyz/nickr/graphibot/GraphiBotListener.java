@@ -16,6 +16,7 @@ import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import xyz.nickr.graphibot.actions.ColorAction;
 import xyz.nickr.graphibot.actions.GraphiAction;
+import xyz.nickr.graphibot.exceptions.GraphiException;
 import xyz.nickr.graphibot.exceptions.InvalidActionNumber;
 import xyz.nickr.graphibot.exceptions.InvalidActionString;
 import xyz.nickr.graphibot.exceptions.NoSizeSet;
@@ -211,6 +212,8 @@ public class GraphiBotListener implements Listener {
             reply(event, "It looks like the command you just sent would be drawn outside of the canvas!");
         } catch (InvalidActionNumber e) {
             reply(event, "You have " + session.getActions().size() + " actions. " + (e.getNumber() + 1) + " is not valid.");
+        } catch (Exception e) {
+            reply(event, e.toString());
         }
     }
 

@@ -12,7 +12,7 @@ import xyz.nickr.graphibot.GraphiSession;
  */
 public class CompositeAction extends GraphiAction {
 
-    List<GraphiAction> actions;
+    private List<GraphiAction> actions;
 
     public CompositeAction(List<GraphiAction> actions) {
         super("", "");

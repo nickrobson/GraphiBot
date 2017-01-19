@@ -6,7 +6,9 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -148,9 +150,8 @@ public class GraphiSession {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
             return new ByteArrayInputStream(baos.toByteArray());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
         }
     }
 
