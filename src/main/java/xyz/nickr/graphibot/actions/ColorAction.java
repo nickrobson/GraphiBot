@@ -67,8 +67,8 @@ public class ColorAction extends GraphiAction {
         try {
             for (i = 0, j = split.length; i < j; i++) {
                 ints[i] = Integer.parseInt(split[i]);
-                if (ints[i] < 0 || ints[i] >= 255)
-                    throw new InvalidActionString(null, string, "components must be in ");
+                if (ints[i] < 0 || ints[i] >= 256)
+                    throw new InvalidActionString(null, string, "components must be in [0,256)");
             }
         } catch (NumberFormatException ex) {
             throw new InvalidActionString(null, string, "Not an integer: '" + split[i] + "'");
