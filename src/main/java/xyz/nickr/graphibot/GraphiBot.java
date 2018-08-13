@@ -44,7 +44,7 @@ public class GraphiBot {
                     .entryLoader(GraphiSession::new)
                     .asyncExpirationListener((id, session) -> {
                         String message = "Session expired.";
-                        if (session.getSize() > 0 && !session.isEmpty()) {
+                        if (session.isActive()) {
                             String expiryMessage = session.getExpiryMessage();
                             message += "\n\n" + expiryMessage;
                         }

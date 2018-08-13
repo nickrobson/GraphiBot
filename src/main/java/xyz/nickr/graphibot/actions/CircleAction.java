@@ -34,9 +34,11 @@ public class CircleAction extends GraphiAction {
         try {
             for (i = 0; i < 2; i++) {
                 ints[i] = Integer.parseInt(split[i]);
-                if (ints[i] < 0 || ints[i] >= session.getSize())
+                if (ints[i] < 0)
                     throw new NotInCanvas();
             }
+            if (ints[0] >= session.getWidth() || ints[1] >= session.getHeight())
+                throw new NotInCanvas();
         } catch (NumberFormatException ex) {
             throw new InvalidActionString(this, args, "Not an integer: '" + split[i] + "'");
         }
@@ -52,9 +54,9 @@ public class CircleAction extends GraphiAction {
 
         outline = split[3].equalsIgnoreCase("outline");
 
-        if (x - radius < 0 || x + radius >= session.getSize())
+        if (x - radius < 0 || x + radius >= session.getWidth())
             throw new NotInCanvas();
-        if (y - radius < 0 || y + radius >= session.getSize())
+        if (y - radius < 0 || y + radius >= session.getHeight())
             throw new NotInCanvas();
     }
 

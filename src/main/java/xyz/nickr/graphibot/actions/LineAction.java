@@ -29,7 +29,9 @@ public class LineAction extends GraphiAction {
         try {
             for (i = 0; i < 4; i++) {
                 ints[i] = Integer.parseInt(split[i]);
-                if (ints[i] < 0 || ints[i] >= session.getSize())
+                if (ints[i] < 0)
+                    throw new NotInCanvas();
+                if ((i & 1) == 0 && ints[i] >= session.getWidth() || (i & 1) == 1 && ints[i] >= session.getHeight())
                     throw new NotInCanvas();
             }
         } catch (NumberFormatException ex) {

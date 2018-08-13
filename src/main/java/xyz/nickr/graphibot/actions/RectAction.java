@@ -41,9 +41,9 @@ public class RectAction extends GraphiAction {
         y = ints[1];
         width = ints[2];
         height = ints[3];
-        if (x < 0 || x + width >= session.getSize())
+        if (x < 0 || x + width >= session.getWidth())
             throw new NotInCanvas();
-        if (y < 0 || y + height >= session.getSize())
+        if (y < 0 || y + height >= session.getHeight())
             throw new NotInCanvas();
         outline = split[4].equalsIgnoreCase("outline");
     }

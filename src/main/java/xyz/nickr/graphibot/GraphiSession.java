@@ -38,15 +38,19 @@ public class GraphiSession {
     private int actionCount = 0, preClearCount;
     private boolean wasCleared = false;
 
-    private Integer size;
+    private Integer width, height;
 
     @Getter
     private Color background = Color.BLACK;
     @Getter @Setter
     private String backgroundString = "black";
 
+    public boolean isActive() {
+        return width != null && height != null && !this.isEmpty();
+    }
+
     public void accept(String string) {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         String[] split = string.trim().split(" ", 2);
         if (split.length == 1) {
@@ -70,7 +74,7 @@ public class GraphiSession {
     }
 
     public GraphiAction undo() {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         if (wasCleared) {
             actionCount = preClearCount;
@@ -83,7 +87,7 @@ public class GraphiSession {
     }
 
     public GraphiAction redo() {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         wasCleared = false;
         if (actionCount == actions.size())
@@ -92,7 +96,7 @@ public class GraphiSession {
     }
 
     public GraphiAction remove(int n) {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         try {
             GraphiAction action = actions.remove(n);
@@ -114,27 +118,28 @@ public class GraphiSession {
         return actionCount == 0;
     }
 
-    public int setSize(int size) {
-        return this.size = Math.max(MIN_SIZE, Math.min(size, MAX_SIZE));
+    public void setSize(int width, int height) {
+        this.width = Math.max(MIN_SIZE, Math.min(width, MAX_SIZE));
+        this.height = Math.max(MIN_SIZE, Math.min(height, MAX_SIZE));
     }
 
     public void setBackground(Color c) {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         background = c;
     }
 
     public BufferedImage build() {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
-        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g = image.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (background != null) {
             g.setColor(background);
-            g.fillRect(0, 0, size, size);
+            g.fillRect(0, 0, width, height);
         }
         g.setColor(Color.WHITE);
         for (int i = 0; i < actionCount; i++) {
@@ -156,20 +161,24 @@ public class GraphiSession {
     }
 
     public List<GraphiAction> getActions() {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         return Collections.unmodifiableList(actions.subList(0, actionCount));
     }
 
-    public int getSize() {
-        return size != null ? size : -1;
+    public int getWidth() {
+        return width != null ? width : -1;
+    }
+
+    public int getHeight() {
+        return height != null ? height : -1;
     }
 
     public String getExpiryMessage() {
-        if (size == null)
+        if (width == null || height == null)
             throw new NoSizeSet();
         String message = "";
-        message += "Size: " + size;
+        message += "Size: " + width + "x" + height;
         message += "\nBackground: " + backgroundString;
         if (actionCount > 0)
             message += "\n" + GraphiBotListener.toString(getActions());

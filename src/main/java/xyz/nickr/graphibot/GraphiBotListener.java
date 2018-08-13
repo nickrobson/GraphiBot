@@ -65,7 +65,6 @@ public class GraphiBotListener extends AbstractCommandFilter {
     @Override
     protected boolean preTest(TextMessageEvent textMessageEvent, Command command) {
         if (commands.contains(command.getBaseCommand().toLowerCase())) {
-            System.out.println(command);
             return true;
         }
         return false;
@@ -79,7 +78,7 @@ public class GraphiBotListener extends AbstractCommandFilter {
 
     private static CommandHandler delete() {
         return (event, command, session) -> {
-            if (session.getSize() < 0) {
+            if (!session.isActive()) {
                 reply(event, "You don't have an active session!");
             } else if (bot.sessions.remove(event.getMessage().getSender().getId(), session)) {
                 reply(event, "Deleted your session.");
@@ -115,20 +114,30 @@ public class GraphiBotListener extends AbstractCommandFilter {
         return (event, command, session) -> {
             String argsString = command.getArgsAsText();
             if (argsString.isEmpty()) {
-                reply(event, "*Usage*: `/size [size]`\nMin: " + GraphiSession.MIN_SIZE + "\nMax: " + GraphiSession.MAX_SIZE, ParseMode.MARKDOWN);
+                reply(event, "*Usage*: `/size [width] (height)`\nMin: " + GraphiSession.MIN_SIZE + "\nMax: " + GraphiSession.MAX_SIZE, ParseMode.MARKDOWN);
             } else {
-                int size;
+                int width, height;
+                String[] split = argsString.split(" ", 2);
                 try {
-                    size = Integer.parseInt(argsString);
+                    width = height = Integer.parseInt(split[0]);
                 } catch (NumberFormatException ex) {
-                    reply(event, "Invalid number.");
+                    reply(event, "Invalid number for width.");
                     return;
                 }
-                if (size < GraphiSession.MIN_SIZE || size > GraphiSession.MAX_SIZE) {
-                    reply(event, "Size must be between " + GraphiSession.MIN_SIZE + " and " + GraphiSession.MAX_SIZE);
+                if (split.length > 1) {
+                    try {
+                        height = Integer.parseInt(split[1]);
+                    } catch (NumberFormatException ex) {
+                        reply(event, "Invalid number for height.");
+                        return;
+                    }
+                }
+                if (width < GraphiSession.MIN_SIZE || width > GraphiSession.MAX_SIZE
+                     || height < GraphiSession.MIN_SIZE || height > GraphiSession.MAX_SIZE) {
+                    reply(event, "Width and height must both be between " + GraphiSession.MIN_SIZE + " and " + GraphiSession.MAX_SIZE);
                 } else {
-                    session.setSize(size);
-                    reply(event, "Size set to " + size + "x" + size);
+                    session.setSize(width, height);
+                    reply(event, "Size set to " + width + "x" + height);
                     if (!session.isEmpty()) {
                         show(event, session);
                     }

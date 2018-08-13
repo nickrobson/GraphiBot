@@ -39,7 +39,9 @@ public class PolygonAction extends GraphiAction {
         try {
             for (i = 0, j = split.length - 1; i < j; i++) {
                 int a = Integer.parseInt(split[i]);
-                if (a < 0 || a >= session.getSize())
+                if (a < 0)
+                    throw new NotInCanvas();
+                if (a >= (x ? session.getWidth() : session.getHeight()))
                     throw new NotInCanvas();
                 (x ? this.x : this.y)[p] = a;
                 if (x = !x)

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import xyz.nickr.graphibot.GraphiSession;
 import xyz.nickr.graphibot.exceptions.InvalidActionString;
+import xyz.nickr.graphibot.exceptions.NotInCanvas;
 
 /**
  * @author Nick Robson
@@ -35,6 +36,10 @@ public class TextAction extends GraphiAction {
         } catch (NumberFormatException ex) {
             throw new InvalidActionString(this, args, "Not an integer: '" + split[1] + "'");
         }
+        if (x < 0 || x >= session.getWidth())
+            throw new NotInCanvas();
+        if (y < 0 || y >= session.getHeight())
+            throw new NotInCanvas();
         List<String> alignOptions = Arrays.asList("left", "center", "right");
         align = alignOptions.indexOf(split[2]);
         if (align == -1)
